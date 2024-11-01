@@ -3,5 +3,6 @@
 /MongoLibary/obj
 
 
-
-
+/MongoConsumer/bin
+/MongoConsumer/.vs
+/MongoConsumer/obj
