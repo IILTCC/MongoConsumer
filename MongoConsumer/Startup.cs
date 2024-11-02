@@ -14,9 +14,10 @@ namespace MongoConsumer
     {
         private readonly KafkaSettings _kafkaSettings;
         private readonly KafkaConnection _kafkaConnection;
-        public Startup(KafkaSettings kafkaSettings) 
+        public Startup() 
         {
-            _kafkaSettings = kafkaSettings;
+            SettingsProvider settingsProvider = SettingsProvider.Instance;
+            _kafkaSettings = settingsProvider.ProvideKafkaSettings();
             _kafkaConnection = new KafkaConnection(_kafkaSettings);
         }
         public List<string> InitializeTopicNames()

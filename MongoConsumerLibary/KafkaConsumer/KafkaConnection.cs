@@ -51,7 +51,6 @@ namespace MongoConsumerLibary.KafkaConsumer
             {
                 e.Cancel = true;
                 consumer.Close();  // Commit offsets and unsubscribe before shutting down
-
                 cts.Cancel();
             };
             CancellationToken cancelToken = cts.Token;
