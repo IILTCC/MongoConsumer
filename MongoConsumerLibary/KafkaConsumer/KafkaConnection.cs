@@ -61,7 +61,7 @@ namespace MongoConsumerLibary.KafkaConsumer
             var config = new ConsumerConfig
             {
                 BootstrapServers = _kafkaSettings.KafkaUrl,
-                GroupId = _kafkaSettings.MongoConsumerGroup,
+                GroupId = _kafkaSettings.KafkaConsumerGroup,
                 AutoOffsetReset = AutoOffsetReset.Earliest
             };
             IConsumer<Ignore, string> consumer = new ConsumerBuilder<Ignore, string>(config).Build();
