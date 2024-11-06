@@ -3,10 +3,7 @@ using MongoConsumer.AppSettings;
 using MongoConsumerLibary.KafkaConsumer;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace MongoConsumer
 {
@@ -22,10 +19,10 @@ namespace MongoConsumer
         }
         public List<string> InitializeTopicNames()
         {
-            string[] topicTemp = new string[5] { "FlightBoxDownIcd", "FlightBoxUpIcd", "FiberBoxUpIcd", "FiberBoxDownIcd", "TelemetryStatistics" };
-            List<string> topicNames = new List<string>(); ;
-            foreach (string topic in topicTemp)
+            List<string> topicNames = new List<string>();
+            foreach (string topic in _kafkaSettings.KafkaTopics)
                 topicNames.Add(topic);
+            
             return topicNames;
         }
         public void StartMongoConsumer()

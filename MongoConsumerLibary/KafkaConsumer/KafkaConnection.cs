@@ -1,10 +1,7 @@
 ﻿using Confluent.Kafka;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace MongoConsumerLibary.KafkaConsumer
 {
@@ -18,6 +15,7 @@ namespace MongoConsumerLibary.KafkaConsumer
 
         public void WaitForKafkaConnection()
         {
+            const int TIMEOUT = 5;
             IAdminClient _adminClient;
 
             AdminClientConfig adminConfig = new AdminClientConfig
@@ -29,7 +27,7 @@ namespace MongoConsumerLibary.KafkaConsumer
             {
                 try
                 {
-                    _adminClient.GetMetadata(TimeSpan.FromSeconds(5));
+                    _adminClient.GetMetadata(TimeSpan.FromSeconds(TIMEOUT));
                     return;
                 }
                 catch (KafkaException e)

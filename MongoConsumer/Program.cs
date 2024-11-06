@@ -1,9 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using MongoConsumer.AppSettings;
-using System;
-using System.IO;
-using MongoConsumerLibary.KafkaConsumer;
-namespace MongoConsumer
+﻿namespace MongoConsumer
 {
     class Program
     {
