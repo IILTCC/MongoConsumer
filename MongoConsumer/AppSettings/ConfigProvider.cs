@@ -4,21 +4,21 @@ using System.IO;
 
 namespace MongoConsumer.AppSettings
 {
-    class SettingsProvider
+    class ConfigProvider
     {
-        private static SettingsProvider _instance;
+        private static ConfigProvider _instance;
         private static IConfigurationRoot _configFile;
         private KafkaSettings _kafkaSettings;
-        public static SettingsProvider Instance
+        public static ConfigProvider Instance
         {
             get
             {
                 if (_instance == null)
-                    _instance = new SettingsProvider();
+                    _instance = new ConfigProvider();
                 return _instance;
             }
         }
-        public SettingsProvider()
+        public ConfigProvider()
         {
             _configFile = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
@@ -26,7 +26,7 @@ namespace MongoConsumer.AppSettings
             .Build();
             _kafkaSettings = _configFile.GetRequiredSection(AppSettingPaths.KafkaSettingsPath).Get<KafkaSettings>();
         }
-        public KafkaSettings ProvideKafkaSettings()
+        public KafkaSettings KafkaSettings()
         {
             return _kafkaSettings;                 
         }

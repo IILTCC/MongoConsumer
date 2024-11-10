@@ -13,8 +13,8 @@ namespace MongoConsumer
         private readonly KafkaConnection _kafkaConnection;
         public Startup() 
         {
-            SettingsProvider settingsProvider = SettingsProvider.Instance;
-            _kafkaSettings = settingsProvider.ProvideKafkaSettings();
+            ConfigProvider configProvider = ConfigProvider.Instance;
+            _kafkaSettings = configProvider.KafkaSettings();
             _kafkaConnection = new KafkaConnection(_kafkaSettings);
         }
         public List<string> InitializeTopicNames()
@@ -28,8 +28,8 @@ namespace MongoConsumer
         public void StartMongoConsumer()
         {
             _kafkaConnection.WaitForKafkaConnection();
-            IConsumer<Ignore, string> consumer = _kafkaConnection.ProvideConsumer(InitializeTopicNames());
-            CancellationToken cancellationToken =  _kafkaConnection.ProvideCancellationToken(consumer);
+            IConsumer<Ignore, string> consumer = _kafkaConnection.Consumer(InitializeTopicNames());
+            CancellationToken cancellationToken =  _kafkaConnection.CancellationToken(consumer);
             while(true)
             {
                 try

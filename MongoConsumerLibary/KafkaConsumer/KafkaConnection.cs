@@ -15,19 +15,12 @@ namespace MongoConsumerLibary.KafkaConsumer
 
         public void WaitForKafkaConnection()
         {
-            const int TIMEOUT = 5;
-            IAdminClient _adminClient;
-
-            AdminClientConfig adminConfig = new AdminClientConfig
-            {
-                BootstrapServers = _kafkaSettings.KafkaUrl
-            };
-            _adminClient = new AdminClientBuilder(adminConfig).Build();
+            IAdminClient adminClient = InitializeAdminClient();
             while (true)
             {
                 try
                 {
-                    _adminClient.GetMetadata(TimeSpan.FromSeconds(TIMEOUT));
+                    adminClient.GetMetadata(TimeSpan.FromSeconds(Consts.TIMEOUT));
                     return;
                 }
                 catch (KafkaException e)
@@ -40,7 +33,18 @@ namespace MongoConsumerLibary.KafkaConsumer
                 }
             }
         }
-        public CancellationToken ProvideCancellationToken(IConsumer<Ignore,string> consumer)
+
+        public IAdminClient InitializeAdminClient()
+        {
+            AdminClientConfig adminConfig = new AdminClientConfig
+            {
+                BootstrapServers = _kafkaSettings.KafkaUrl
+            };
+            IAdminClient adminClient = new AdminClientBuilder(adminConfig).Build();
+            return adminClient;
+        }
+
+        public CancellationToken CancellationToken(IConsumer<Ignore,string> consumer)
         {
             CancellationTokenSource cts = new CancellationTokenSource();
 
@@ -54,9 +58,9 @@ namespace MongoConsumerLibary.KafkaConsumer
             CancellationToken cancelToken = cts.Token;
             return cancelToken;
         }
-        public IConsumer<Ignore, string> ProvideConsumer(List<string> topicNames)
+        public IConsumer<Ignore, string> Consumer(List<string> topicNames)
         {
-            var config = new ConsumerConfig
+            ConsumerConfig config = new ConsumerConfig
             {
                 BootstrapServers = _kafkaSettings.KafkaUrl,
                 GroupId = _kafkaSettings.KafkaConsumerGroup,
