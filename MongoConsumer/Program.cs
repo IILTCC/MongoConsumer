@@ -1,12 +1,11 @@
-﻿using System;
-
-namespace MongoConsumer
+﻿namespace MongoConsumer
 {
     class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Startup startUp = new Startup();
+            startUp.StartMongoConsumer();
         }
     }
 }
