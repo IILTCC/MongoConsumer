@@ -37,13 +37,12 @@ namespace MongoConsumerLibary.MongoConnection
             _inflater.SetInput(byteData);
 
             byte[] outputData = new byte[byteData.Length];
-            _inflater.Inflate(outputData);
+            int bytesWritten = _inflater.Inflate(outputData);
             string retString = Encoding.UTF8.GetString(outputData);
-
-            while (!_inflater.IsFinished)
+            while (bytesWritten != Consts.NO_BYTES_WRITTEN)
             {
-                int bytesWritten = _inflater.Inflate(outputData);
-                retString += Encoding.UTF8.GetString(outputData, Consts.STRING_STARTING_POINT, bytesWritten);
+                bytesWritten = _inflater.Inflate(outputData);
+                retString += Encoding.UTF8.GetString(outputData, Consts.DECOMPRESS_STRING_STARTING_POINT, bytesWritten);
             }
             return retString;
         }
