@@ -1,6 +1,7 @@
 ﻿using Confluent.Kafka;
 using MongoConsumer.AppSettings;
 using MongoConsumerLibary.KafkaConsumer;
+using MongoConsumerLibary.MongoConnection;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -11,11 +12,13 @@ namespace MongoConsumer
     {
         private readonly KafkaSettings _kafkaSettings;
         private readonly KafkaConnection _kafkaConnection;
+        private readonly ZlibCompression _zlibCompression; 
         public Startup() 
         {
             ConfigProvider configProvider = ConfigProvider.Instance;
             _kafkaSettings = configProvider.KafkaSettings();
             _kafkaConnection = new KafkaConnection(_kafkaSettings);
+            _zlibCompression = new ZlibCompression();
         }
         public List<string> InitializeTopicNames()
         {
