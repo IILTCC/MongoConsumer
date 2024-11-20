@@ -11,6 +11,8 @@
 
   <ItemGroup>
     <PackageReference Include="Confluent.Kafka" Version="2.6.0" />
+    <PackageReference Include="MongoDB.Bson" Version="3.0.0" />
+    <PackageReference Include="MongoDB.Driver" Version="3.0.0" />
     <PackageReference Include="SharpZipLib" Version="1.4.2" />
   </ItemGroup>
 
