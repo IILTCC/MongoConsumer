@@ -1,6 +1,6 @@
 ﻿namespace MongoConsumerLibary.MongoConnection.Collections
 {
-    class FlightBoxDownCollection : BaseBoxCollection
+    public class FlightBoxDownCollection : BaseBoxCollection
     {
     }
 }

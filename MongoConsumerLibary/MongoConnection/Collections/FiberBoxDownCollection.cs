@@ -1,6 +1,6 @@
 ﻿namespace MongoConsumerLibary.MongoConnection.Collections
 {
-    class FiberBoxDownCollection : BaseBoxCollection
+    public class FiberBoxDownCollection : BaseBoxCollection
     {
     }
 }
