@@ -1,11 +1,10 @@
 ﻿namespace MongoConsumerLibary.MongoConnection.Enums
 {
-    public enum CollectionType
+    public enum IcdType
     {
         FlightBoxDown,
         FlightBoxUp,
         FiberBoxDown,
-        FiberBoxUp,
-        TelemetryStatistics
+        FiberBoxUp
     }
 }

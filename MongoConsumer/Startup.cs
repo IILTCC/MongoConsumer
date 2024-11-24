@@ -17,10 +17,10 @@ namespace MongoConsumer
         public Startup() 
         {
             ConfigProvider configProvider = ConfigProvider.Instance;
-            _kafkaSettings = configProvider.KafkaSettings();
+            _kafkaSettings = configProvider.ProvideKafkaSettings();
             _kafkaConnection = new KafkaConnection(_kafkaSettings);
             _zlibCompression = new ZlibCompression();
-            _mongoConnection = new MongoConnection(configProvider.MongoSettings());
+            _mongoConnection = new MongoConnection(configProvider.ProvideMongoSettings());
         }
         public List<string> InitializeTopicNames()
         {
