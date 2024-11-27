@@ -5,7 +5,7 @@ namespace MongoConsumerLibary.MongoConnection.Collections
 {
     public class BaseBoxCollection : ExpirableCollection
     {
-        public IcdType IcdTypeValue { get; set; }
+        public string IcdType { get; set; }
         public Dictionary<string,int> DecryptedParameters { get; set; }
    }
 }

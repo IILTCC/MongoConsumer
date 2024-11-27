@@ -21,6 +21,7 @@ namespace MongoConsumerLibary.MongoConnection.Collections
 
         public void AddDocument(CollectionType document, int expireAfter)
         {
+            document.InsertTime = DateTime.Now;
             document.ExpirationTime = DateTime.Now.AddSeconds(expireAfter);
             _collection.InsertOne(document);
         }
