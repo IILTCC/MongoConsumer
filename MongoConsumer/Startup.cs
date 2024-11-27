@@ -12,13 +12,15 @@ namespace MongoConsumer
     {
         private readonly KafkaSettings _kafkaSettings;
         private readonly KafkaConnection _kafkaConnection;
-        private readonly ZlibCompression _zlibCompression; 
+        private readonly ZlibCompression _zlibCompression;
+        private readonly MongoConnection _mongoConnection;
         public Startup() 
         {
             ConfigProvider configProvider = ConfigProvider.Instance;
-            _kafkaSettings = configProvider.KafkaSettings();
+            _kafkaSettings = configProvider.ProvideKafkaSettings();
             _kafkaConnection = new KafkaConnection(_kafkaSettings);
             _zlibCompression = new ZlibCompression();
+            _mongoConnection = new MongoConnection(configProvider.ProvideMongoSettings());
         }
         public List<string> InitializeTopicNames()
         {
