@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <Folder Include="CompressionTool\" />
-    <Folder Include="KafkaConsumer\" />
   </ItemGroup>
 
   <ItemGroup>

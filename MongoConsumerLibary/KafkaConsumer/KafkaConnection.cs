@@ -25,11 +25,9 @@ namespace MongoConsumerLibary.KafkaConsumer
                 }
                 catch (KafkaException e)
                 {
-                    Console.WriteLine(e);
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
                 }
             }
         }

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Threading;
 using MongoConsumerLibary;
 using MongoConsumerLibary.MongoConnection.Collections;
+using MongoConsumer.Logs;
 
 namespace MongoConsumer
 {
@@ -17,14 +18,24 @@ namespace MongoConsumer
         private readonly ZlibCompression _zlibCompression;
         private readonly MongoConnection _mongoConnection;
         private readonly MongoSettings _mongoSettings;
+        private readonly MongoConsumerLogger _logger;
         public Startup() 
         {
             ConfigProvider configProvider = ConfigProvider.Instance;
+            _logger = MongoConsumerLogger.Instance;
             _kafkaSettings = configProvider.ProvideKafkaSettings();
-            _kafkaConnection = new KafkaConnection(_kafkaSettings);
-            _zlibCompression = new ZlibCompression();
-            _mongoConnection = new MongoConnection(configProvider.ProvideMongoSettings());
             _mongoSettings = configProvider.ProvideMongoSettings();
+            _zlibCompression = new ZlibCompression();
+
+            _logger.LogInfo("Waiting for kafka connection");
+            _kafkaConnection = new KafkaConnection(_kafkaSettings);
+            _logger.LogInfo("Connected to kafka");
+
+            _logger.LogInfo("waiting for mongo connection");
+            _mongoConnection = new MongoConnection(configProvider.ProvideMongoSettings());
+            _logger.LogInfo("Connected to mongo");
+
+            _logger.LogInfo("Succesfuly initated mongo consumer");
         }
         public List<string> InitializeTopicNames()
         {
@@ -40,6 +51,7 @@ namespace MongoConsumer
             _kafkaConnection.WaitForKafkaConnection();
             IConsumer<Ignore, string> consumer = _kafkaConnection.Consumer(InitializeTopicNames());
             CancellationToken cancellationToken = _kafkaConnection.CancellationToken(consumer);
+            _logger.LogInfo("Started mongo consumer");
             while (true)
             {
                 try
@@ -55,9 +67,11 @@ namespace MongoConsumer
                 }
                 catch(KafkaException e)
                 {
+                    _logger.LogFatal("Tried receive data from kafka - "+e.Message);
                 }
                 catch(Exception e)
                 {
+                    _logger.LogFatal("Tried receive data from kafka -"+e.Message);
                 }
             }
         }
