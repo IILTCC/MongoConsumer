@@ -27,15 +27,15 @@ namespace MongoConsumer
             _mongoSettings = configProvider.ProvideMongoSettings();
             _zlibCompression = new ZlibCompression();
 
-            _logger.LogInfo("waiting for kafka connection");
+            _logger.LogInfo("Waiting for kafka connection");
             _kafkaConnection = new KafkaConnection(_kafkaSettings);
-            _logger.LogInfo("connected to kafka");
+            _logger.LogInfo("Connected to kafka");
 
             _logger.LogInfo("waiting for mongo connection");
             _mongoConnection = new MongoConnection(configProvider.ProvideMongoSettings());
-            _logger.LogInfo("connected to mongo");
+            _logger.LogInfo("Connected to mongo");
 
-            _logger.LogInfo("succesfuly initated mongo consumer");
+            _logger.LogInfo("Succesfuly initated mongo consumer");
         }
         public List<string> InitializeTopicNames()
         {
@@ -51,7 +51,7 @@ namespace MongoConsumer
             _kafkaConnection.WaitForKafkaConnection();
             IConsumer<Ignore, string> consumer = _kafkaConnection.Consumer(InitializeTopicNames());
             CancellationToken cancellationToken = _kafkaConnection.CancellationToken(consumer);
-            _logger.LogInfo("started mongo consumer");
+            _logger.LogInfo("Started mongo consumer");
             while (true)
             {
                 try
