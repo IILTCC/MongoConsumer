@@ -7,5 +7,6 @@
         public const int DECOMPRESS_STRING_STARTING_POINT = 0;
         public const int NO_BYTES_WRITTEN = 0;
         public const string APPSETTINGS_PATH = "AppSettings/appsettings.json";
+        public const string TELEMETRY_TOPIC_NAME = "TelemetryStatistics";
     }
 }

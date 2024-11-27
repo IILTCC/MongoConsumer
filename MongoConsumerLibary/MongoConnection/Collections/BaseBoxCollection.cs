@@ -6,6 +6,6 @@ namespace MongoConsumerLibary.MongoConnection.Collections
     public class BaseBoxCollection : ExpirableCollection
     {
         public string IcdType { get; set; }
-        public Dictionary<string,int> DecryptedParameters { get; set; }
+        public string CompressedData { get; set; }
    }
 }
