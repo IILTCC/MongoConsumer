@@ -24,10 +24,17 @@ namespace MongoConsumer
             ConfigProvider configProvider = ConfigProvider.Instance;
             _logger = MongoConsumerLogger.Instance;
             _kafkaSettings = configProvider.ProvideKafkaSettings();
-            _kafkaConnection = new KafkaConnection(_kafkaSettings);
-            _zlibCompression = new ZlibCompression();
-            _mongoConnection = new MongoConnection(configProvider.ProvideMongoSettings());
             _mongoSettings = configProvider.ProvideMongoSettings();
+            _zlibCompression = new ZlibCompression();
+
+            _logger.LogInfo("waiting for kafka connection");
+            _kafkaConnection = new KafkaConnection(_kafkaSettings);
+            _logger.LogInfo("connected to kafka");
+
+            _logger.LogInfo("waiting for mongo connection");
+            _mongoConnection = new MongoConnection(configProvider.ProvideMongoSettings());
+            _logger.LogInfo("connected to mongo");
+
             _logger.LogInfo("succesfuly initated mongo consumer");
         }
         public List<string> InitializeTopicNames()
