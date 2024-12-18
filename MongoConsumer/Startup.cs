@@ -8,6 +8,8 @@ using System.Threading;
 using MongoConsumerLibary;
 using MongoConsumerLibary.MongoConnection.Collections;
 using MongoConsumer.Logs;
+using HealthCheck;
+using System.Threading.Tasks;
 
 namespace MongoConsumer
 {
@@ -19,23 +21,28 @@ namespace MongoConsumer
         private readonly MongoConnection _mongoConnection;
         private readonly MongoSettings _mongoSettings;
         private readonly MongoConsumerLogger _logger;
+        private readonly HealthCheckEndPoint _healthCheck;
+
         public Startup() 
         {
             ConfigProvider configProvider = ConfigProvider.Instance;
+            _healthCheck = new HealthCheckEndPoint();
+            Task.Run(()=> { _healthCheck.StartUp(configProvider.ProvideHealthCheckSettings()); });
             _logger = MongoConsumerLogger.Instance;
+            _logger.LogFatal("Tried receive data from kafka - this is a test", LogId.FatalKafkaReceive);
             _kafkaSettings = configProvider.ProvideKafkaSettings();
             _mongoSettings = configProvider.ProvideMongoSettings();
             _zlibCompression = new ZlibCompression();
 
-            _logger.LogInfo("Waiting for kafka connection");
+            _logger.LogInfo("Waiting for kafka connection",LogId.WaitingFor);
             _kafkaConnection = new KafkaConnection(_kafkaSettings);
-            _logger.LogInfo("Connected to kafka");
+            _logger.LogInfo("Connected to kafka",LogId.ConnectionSuccesful);
 
-            _logger.LogInfo("waiting for mongo connection");
+            _logger.LogInfo("waiting for mongo connection", LogId.WaitingFor);
             _mongoConnection = new MongoConnection(configProvider.ProvideMongoSettings());
-            _logger.LogInfo("Connected to mongo");
+            _logger.LogInfo("Connected to mongo", LogId.ConnectionSuccesful);
 
-            _logger.LogInfo("Succesfuly initated mongo consumer");
+            _logger.LogInfo("Succesfuly initated mongo consumer", LogId.Initated);
         }
         public List<string> InitializeTopicNames()
         {
@@ -51,7 +58,7 @@ namespace MongoConsumer
             _kafkaConnection.WaitForKafkaConnection();
             IConsumer<Ignore, string> consumer = _kafkaConnection.Consumer(InitializeTopicNames());
             CancellationToken cancellationToken = _kafkaConnection.CancellationToken(consumer);
-            _logger.LogInfo("Started mongo consumer");
+            _logger.LogInfo("Started mongo consumer", LogId.Initated);
             while (true)
             {
                 try
@@ -67,11 +74,11 @@ namespace MongoConsumer
                 }
                 catch(KafkaException e)
                 {
-                    _logger.LogFatal("Tried receive data from kafka - "+e.Message);
+                    _logger.LogFatal("Tried receive data from kafka - "+e.Message, LogId.FatalKafkaReceive);
                 }
                 catch(Exception e)
                 {
-                    _logger.LogFatal("Tried receive data from kafka -"+e.Message);
+                    _logger.LogFatal("Tried receive data from kafka -"+e.Message, LogId.FatalKafkaReceive);
                 }
             }
         }
