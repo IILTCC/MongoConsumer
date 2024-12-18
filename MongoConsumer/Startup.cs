@@ -29,7 +29,6 @@ namespace MongoConsumer
             _healthCheck = new HealthCheckEndPoint();
             Task.Run(()=> { _healthCheck.StartUp(configProvider.ProvideHealthCheckSettings()); });
             _logger = MongoConsumerLogger.Instance;
-            _logger.LogFatal("Tried receive data from kafka - this is a test", LogId.FatalKafkaReceive);
             _kafkaSettings = configProvider.ProvideKafkaSettings();
             _mongoSettings = configProvider.ProvideMongoSettings();
             _zlibCompression = new ZlibCompression();
