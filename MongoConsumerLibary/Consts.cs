@@ -8,5 +8,8 @@
         public const int NO_BYTES_WRITTEN = 0;
         public const string APPSETTINGS_PATH = "AppSettings/appsettings.json";
         public const string TELEMETRY_TOPIC_NAME = "TelemetryStatistics";
+        public const string LOGGER_VARIABLE_NAME = "ProjectName";
+        public const string PROJECT_NAME = "MongoConsumer";
+        public const string LOGGER_IP = "127.0.0.1";
     }
 }
