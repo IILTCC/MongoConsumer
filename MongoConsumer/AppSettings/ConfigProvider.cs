@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using HealthCheck;
+using Microsoft.Extensions.Configuration;
 using MongoConsumerLibary;
 using MongoConsumerLibary.KafkaConsumer;
 using MongoConsumerLibary.MongoConnection;
@@ -12,6 +13,7 @@ namespace MongoConsumer.AppSettings
         private static IConfigurationRoot _configFile;
         private KafkaSettings _kafkaSettings;
         private MongoSettings _mongoSettings;
+        private HealthCheckSettings _healthCheckSettings;
         public static ConfigProvider Instance
         {
             get
@@ -29,6 +31,7 @@ namespace MongoConsumer.AppSettings
             .Build();
             _kafkaSettings = _configFile.GetRequiredSection(nameof(KafkaSettings)).Get<KafkaSettings>();
             _mongoSettings = _configFile.GetRequiredSection(nameof(MongoSettings)).Get<MongoSettings>();
+            _healthCheckSettings = _configFile.GetRequiredSection(nameof(HealthCheckSettings)).Get<HealthCheckSettings>();
         }
         public KafkaSettings ProvideKafkaSettings()
         {
@@ -37,6 +40,10 @@ namespace MongoConsumer.AppSettings
         public MongoSettings ProvideMongoSettings()
         {
             return _mongoSettings;
+        }
+        public HealthCheckSettings ProvideHealthCheckSettings()
+        {
+            return _healthCheckSettings;
         }
     }
 }
