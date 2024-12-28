@@ -11,5 +11,8 @@
         public const string LOGGER_VARIABLE_NAME = "ProjectName";
         public const string PROJECT_NAME = "MongoConsumer";
         public const string LOGGER_IP = "127.0.0.1";
+        public const string ARCHIVE_ID_EXCLUDE = "_id";
+        public const string ARCHIVE_ICD_PARAMETER = "IcdType";
+        public const string ARCHIVE_ICD_ADDON = "Icd";
     }
 }
