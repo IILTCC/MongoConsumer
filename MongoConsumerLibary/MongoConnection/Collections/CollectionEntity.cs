@@ -29,9 +29,9 @@ namespace MongoConsumerLibary.MongoConnection.Collections
             document.ExpirationTime = DateTime.Now.AddSeconds(expireAfter);
             _collection.InsertOne(document);
         }
-        private async Task<List<CollectionType>> GetDocumentAbs(int limit,int skip, FilterDefinition<CollectionType> filter)
+        private async Task<List<CollectionType>> GetDocumentBase(int limit,int skip, FilterDefinition<CollectionType> filter)
         {
-            var projection = Builders<CollectionType>.Projection.Exclude(Consts.ARCHIVE_ID_EXCLUDE);
+            ProjectionDefinition<CollectionType> projection = Builders<CollectionType>.Projection.Exclude(Consts.ARCHIVE_ID_EXCLUDE);
             return await _collection.Find(filter).Limit(limit).Skip(skip).Project<CollectionType>(projection).ToListAsync();
         }
         public async Task<List<CollectionType>> GetDocument(int limit,int skip, DateTime startDate, DateTime endDate)
@@ -40,7 +40,7 @@ namespace MongoConsumerLibary.MongoConnection.Collections
             Builders<CollectionType>.Filter.Gte(document => document.InsertTime, startDate),
             Builders<CollectionType>.Filter.Lt(document => document.InsertTime, endDate)
             );
-            return await GetDocumentAbs(limit, skip,filter);
+            return await GetDocumentBase(limit, skip,filter);
         }        
 
         public async Task<List<CollectionType>> GetDocument(IcdType type,int limit,DateTime startDate)
@@ -48,7 +48,7 @@ namespace MongoConsumerLibary.MongoConnection.Collections
             FilterDefinition<CollectionType> filter = Builders<CollectionType>.Filter.And(
                 Builders<CollectionType>.Filter.Eq(Consts.ARCHIVE_ICD_PARAMETER, type.ToString() + Consts.ARCHIVE_ICD_ADDON),
                 Builders<CollectionType>.Filter.Gte(document => document.InsertTime,startDate));
-            return await GetDocumentAbs(limit,0,filter);
+            return await GetDocumentBase(limit,0,filter);
         }
 
         public async Task<List<CollectionType>> GetDocument(IcdType type, int limit, DateTime startDate,DateTime endDate)
@@ -58,7 +58,7 @@ namespace MongoConsumerLibary.MongoConnection.Collections
                 Builders<CollectionType>.Filter.Lt(document => document.InsertTime, endDate),
                 Builders<CollectionType>.Filter.Eq(Consts.ARCHIVE_ICD_PARAMETER, type.ToString() + Consts.ARCHIVE_ICD_ADDON)
                 );
-            return await GetDocumentAbs(limit,0,filter);
+            return await GetDocumentBase(limit,0,filter);
         }
 
         public async Task<List<CollectionType>> GetDocument(IcdType type, int limit,int skip, DateTime startDate, DateTime endDate)
@@ -68,7 +68,7 @@ namespace MongoConsumerLibary.MongoConnection.Collections
                 Builders<CollectionType>.Filter.Lt(document => document.InsertTime, endDate),
                 Builders<CollectionType>.Filter.Eq(Consts.ARCHIVE_ICD_PARAMETER, type.ToString() + Consts.ARCHIVE_ICD_ADDON)
                 );
-            return await GetDocumentAbs(limit, skip, filter);
+            return await GetDocumentBase(limit, skip, filter);
         }
     }
 }
