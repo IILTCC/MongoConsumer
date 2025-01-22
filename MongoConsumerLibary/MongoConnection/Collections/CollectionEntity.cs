@@ -1,5 +1,9 @@
-﻿using MongoDB.Driver;
+﻿using MongoConsumerLibary.MongoConnection.Enums;
+using MongoDB.Bson;
+using MongoDB.Driver;
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MongoConsumerLibary.MongoConnection.Collections
 {
@@ -24,6 +28,47 @@ namespace MongoConsumerLibary.MongoConnection.Collections
             document.InsertTime = DateTime.Now;
             document.ExpirationTime = DateTime.Now.AddSeconds(expireAfter);
             _collection.InsertOne(document);
+        }
+        private async Task<List<CollectionType>> GetDocumentBase(int limit,int skip, FilterDefinition<CollectionType> filter)
+        {
+            ProjectionDefinition<CollectionType> projection = Builders<CollectionType>.Projection.Exclude(Consts.ARCHIVE_ID_EXCLUDE);
+            return await _collection.Find(filter).Limit(limit).Skip(skip).Project<CollectionType>(projection).ToListAsync();
+        }
+        public async Task<List<CollectionType>> GetDocument(int limit,int skip, DateTime startDate, DateTime endDate)
+        {
+            FilterDefinition<CollectionType> filter = Builders<CollectionType>.Filter.And(
+            Builders<CollectionType>.Filter.Gte(document => document.InsertTime, startDate),
+            Builders<CollectionType>.Filter.Lt(document => document.InsertTime, endDate)
+            );
+            return await GetDocumentBase(limit, skip,filter);
+        }        
+
+        public async Task<List<CollectionType>> GetDocument(IcdType type,int limit,DateTime startDate)
+        {
+            FilterDefinition<CollectionType> filter = Builders<CollectionType>.Filter.And(
+                Builders<CollectionType>.Filter.Eq(Consts.ARCHIVE_ICD_PARAMETER, type.ToString() + Consts.ARCHIVE_ICD_ADDON),
+                Builders<CollectionType>.Filter.Gte(document => document.InsertTime,startDate));
+            return await GetDocumentBase(limit,0,filter);
+        }
+
+        public async Task<List<CollectionType>> GetDocument(IcdType type, int limit, DateTime startDate,DateTime endDate)
+        {
+            FilterDefinition<CollectionType> filter = Builders<CollectionType>.Filter.And(
+                Builders<CollectionType>.Filter.Gte(document => document.InsertTime, startDate),
+                Builders<CollectionType>.Filter.Lt(document => document.InsertTime, endDate),
+                Builders<CollectionType>.Filter.Eq(Consts.ARCHIVE_ICD_PARAMETER, type.ToString() + Consts.ARCHIVE_ICD_ADDON)
+                );
+            return await GetDocumentBase(limit,0,filter);
+        }
+
+        public async Task<List<CollectionType>> GetDocument(IcdType type, int limit,int skip, DateTime startDate, DateTime endDate)
+        {
+            FilterDefinition<CollectionType> filter = Builders<CollectionType>.Filter.And(
+                Builders<CollectionType>.Filter.Gte(document => document.InsertTime, startDate),
+                Builders<CollectionType>.Filter.Lt(document => document.InsertTime, endDate),
+                Builders<CollectionType>.Filter.Eq(Consts.ARCHIVE_ICD_PARAMETER, type.ToString() + Consts.ARCHIVE_ICD_ADDON)
+                );
+            return await GetDocumentBase(limit, skip, filter);
         }
     }
 }

@@ -1,6 +1,10 @@
 ﻿using MongoConsumerLibary.MongoConnection.Collections;
+using MongoConsumerLibary.MongoConnection.Enums;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MongoConsumerLibary.MongoConnection
 {
@@ -30,5 +34,18 @@ namespace MongoConsumerLibary.MongoConnection
         {
             _baseBoxCollection.AddDocument(document, expireAfter);
         }
+        public async Task<List<BaseBoxCollection>> GetDocument(int limit, int skip, DateTime startDate, DateTime endDate)
+        {
+            return await _baseBoxCollection.GetDocument( limit,skip,startDate,endDate);
+        }
+        public async Task<List<BaseBoxCollection>> GetDocument(IcdType collectionType, int limit,DateTime startDate)
+        {
+            return await _baseBoxCollection.GetDocument(collectionType, limit,startDate);
+        }
+        public async Task<List<BaseBoxCollection>> GetDocument(IcdType collectionType, int limit, int skip, DateTime startDate,DateTime endDate)
+        {
+            return await _baseBoxCollection.GetDocument(collectionType, limit,skip,startDate,endDate);
+        }
+
     }
 }
