@@ -10,6 +10,7 @@ using MongoConsumerLibary.MongoConnection.Collections;
 using MongoConsumer.Logs;
 using HealthCheck;
 using System.Threading.Tasks;
+using System.Globalization;
 
 namespace MongoConsumer
 {
@@ -65,9 +66,14 @@ namespace MongoConsumer
                     ConsumeResult<Ignore,string> consumerResult = consumer.Consume(cancellationToken);
                     if (consumerResult.Topic != Consts.TELEMETRY_TOPIC_NAME)
                     {
+                        string packetData = consumerResult.Message.Value.Split(Consts.PACKET_KAFKA_SPLIT)[1];
+                        string packetDateTime = consumerResult.Message.Value.Split(Consts.PACKET_KAFKA_SPLIT)[0];
+                        DateTime packetParsedDate = DateTime.ParseExact(packetDateTime, Consts.PACKET_DATETIME_FORMAT, CultureInfo.InvariantCulture);
+
                         BaseBoxCollection baseBoxCollection = new BaseBoxCollection();
-                        baseBoxCollection.CompressedData = _zlibCompression.CompressData(consumerResult.Message.Value);
+                        baseBoxCollection.CompressedData = _zlibCompression.CompressData(packetData);
                         baseBoxCollection.IcdType = consumerResult.Topic;
+                        baseBoxCollection.PacketTime = packetParsedDate;
                         _mongoConnection.AddDocument(baseBoxCollection,_mongoSettings.DocumentTTL);
                     }
                 }
