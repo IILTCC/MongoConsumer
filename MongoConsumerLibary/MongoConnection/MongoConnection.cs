@@ -1,4 +1,5 @@
-﻿using MongoConsumerLibary.MongoConnection.Collections;
+﻿using Archive.Logs;
+using MongoConsumerLibary.MongoConnection.Collections;
 using MongoConsumerLibary.MongoConnection.Enums;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -21,7 +22,17 @@ namespace MongoConsumerLibary.MongoConnection
             _mongoClient = new MongoClient(_mongoSettings.ConnectionUrl);
             _database = _mongoClient.GetDatabase(_mongoSettings.DataBaseName);
             WaitForMongoConnection();
-            _baseBoxCollection = new CollectionEntity<BaseBoxCollection>(_database,nameof(BaseBoxCollection));
+            _baseBoxCollection = new CollectionEntity<BaseBoxCollection>(_database, nameof(BaseBoxCollection));
+        }
+        public MongoConnection(MongoSettings mongoSettings,ArchiveLogger archiveLogger)
+        {
+            _mongoSettings = mongoSettings;
+            _mongoClient = new MongoClient(_mongoSettings.ConnectionUrl);
+            _database = _mongoClient.GetDatabase(_mongoSettings.DataBaseName);
+            archiveLogger.LogInfo("Trying to connect to mongo",LogId.WaitingFor);
+            WaitForMongoConnection();
+            archiveLogger.LogInfo("Connection succesful",LogId.ConnectionSuccesful);
+            _baseBoxCollection = new CollectionEntity<BaseBoxCollection>(_database,nameof(BaseBoxCollection), archiveLogger);
         }
         public void WaitForMongoConnection()
         {

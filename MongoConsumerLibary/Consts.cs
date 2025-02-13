@@ -14,5 +14,8 @@
         public const string ARCHIVE_ID_EXCLUDE = "_id";
         public const string ARCHIVE_ICD_PARAMETER = "IcdType";
         public const string ARCHIVE_ICD_ADDON = "Icd";
+        public const string LOGGER_PROJECT_NAME = "Archive";
+        public const string PACKET_KAFKA_SPLIT = "$split$";
+        public const string PACKET_DATETIME_FORMAT = "yyyy - MM - dd HH: mm:ss.fff";
     }
 }
