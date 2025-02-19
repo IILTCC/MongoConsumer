@@ -1,4 +1,4 @@
-﻿using Archive.Logs;
+using Archive.Logs;
 using MongoConsumerLibary.MongoConnection.Enums;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -49,6 +49,25 @@ namespace MongoConsumerLibary.MongoConnection.Collections
                     _logger.LogError("Tried pulling from mongo "+e.Message,LogId.FatalMongoPull);
             }
             return new List<CollectionType>();
+        }
+        public async Task<long> GetDocumentCount(DateTime startDate, DateTime endDate, IcdType icdType)
+        {
+            FilterDefinition<CollectionType> filter = Builders<CollectionType>.Filter.And(
+                Builders<CollectionType>.Filter.Gte(document => document.PacketTime, startDate),
+                Builders<CollectionType>.Filter.Lt(document => document.PacketTime, endDate),
+                Builders<CollectionType>.Filter.Eq(Consts.ARCHIVE_ICD_PARAMETER, icdType.ToString() + Consts.ARCHIVE_ICD_ADDON)
+                );
+            ProjectionDefinition<CollectionType> projection = Builders<CollectionType>.Projection.Exclude(Consts.ARCHIVE_ID_EXCLUDE);
+            try
+            {
+                return await _collection.CountDocumentsAsync(filter);
+            }
+            catch (Exception e)
+            {
+                if (_logger != null)
+                    _logger.LogError("Tried pulling from mongo " + e.Message, LogId.FatalMongoPull);
+            }
+            return 0;
         }
         public async Task<List<CollectionType>> GetDocument(int limit,int skip, DateTime startDate, DateTime endDate)
         {

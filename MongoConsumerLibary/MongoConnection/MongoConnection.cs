@@ -45,6 +45,10 @@ namespace MongoConsumerLibary.MongoConnection
         {
             _baseBoxCollection.AddDocument(document, expireAfter);
         }
+        public async Task<long> GetDocumentCount(DateTime startDate, DateTime endDate, IcdType icdType)
+        {
+            return await _baseBoxCollection.GetDocumentCount(startDate, endDate, icdType);
+        }
         public async Task<List<BaseBoxCollection>> GetDocument(int limit, int skip, DateTime startDate, DateTime endDate)
         {
             return await _baseBoxCollection.GetDocument( limit,skip,startDate,endDate);
