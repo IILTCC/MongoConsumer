@@ -6,3 +6,7 @@
 /MongoConsumer/bin
 /MongoConsumer/.vs
 /MongoConsumer/obj
+
+MongoConsumer/ClassDiagram.cd
+
+MongoConsumerLibary/ClassDiagram.cd
