@@ -1,5 +1,6 @@
 ﻿using Archive.Logs;
 using MongoConsumerLibary.MongoConnection.Collections;
+using MongoConsumerLibary.MongoConnection.Collections.PropetyClass;
 using MongoConsumerLibary.MongoConnection.Enums;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -14,6 +15,7 @@ namespace MongoConsumerLibary.MongoConnection
         private readonly MongoClient _mongoClient;
         private readonly IMongoDatabase _database;
         private readonly CollectionEntity<BaseBoxCollection> _baseBoxCollection;
+        private readonly CollectionEntity<StatisticCollection> _statisticCollection;
 
         private readonly MongoSettings _mongoSettings;
         public MongoConnection(MongoSettings mongoSettings)
@@ -23,6 +25,7 @@ namespace MongoConsumerLibary.MongoConnection
             _database = _mongoClient.GetDatabase(_mongoSettings.DataBaseName);
             WaitForMongoConnection();
             _baseBoxCollection = new CollectionEntity<BaseBoxCollection>(_database, nameof(BaseBoxCollection));
+            _statisticCollection = new CollectionEntity<StatisticCollection>(_database, nameof(StatisticCollection));
         }
         public MongoConnection(MongoSettings mongoSettings,ArchiveLogger archiveLogger)
         {
@@ -33,6 +36,7 @@ namespace MongoConsumerLibary.MongoConnection
             WaitForMongoConnection();
             archiveLogger.LogInfo("Connection succesful",LogId.ConnectionSuccesful);
             _baseBoxCollection = new CollectionEntity<BaseBoxCollection>(_database,nameof(BaseBoxCollection), archiveLogger);
+            _statisticCollection = new CollectionEntity<StatisticCollection>(_database, nameof(StatisticCollection));
         }
         public void WaitForMongoConnection()
         {
@@ -44,6 +48,10 @@ namespace MongoConsumerLibary.MongoConnection
         public void AddDocument(BaseBoxCollection document, int expireAfter)
         {
             _baseBoxCollection.AddDocument(document, expireAfter);
+        }        
+        public void AddDocument(StatisticCollection document, int expireAfter)
+        {
+            _statisticCollection.AddDocument(document, expireAfter);
         }
         public async Task<long> GetDocumentCount(DateTime startDate, DateTime endDate, IcdType icdType)
         {
@@ -52,6 +60,10 @@ namespace MongoConsumerLibary.MongoConnection
         public async Task<List<BaseBoxCollection>> GetDocument(int limit, int skip, DateTime startDate, DateTime endDate)
         {
             return await _baseBoxCollection.GetDocument( limit,skip,startDate,endDate);
+        }
+        public async Task<List<StatisticCollection>> GetStatisticDocument(int limit, int skip, DateTime startDate, DateTime endDate)
+        {
+            return await _statisticCollection.GetDocument(limit, skip, startDate, endDate);
         }
         public async Task<List<BaseBoxCollection>> GetDocument(IcdType collectionType, int limit,DateTime startDate)
         {
