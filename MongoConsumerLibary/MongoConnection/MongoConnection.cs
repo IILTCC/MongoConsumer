@@ -1,4 +1,4 @@
-﻿using Archive.Logs;
+using Archive.Logs;
 using MongoConsumerLibary.MongoConnection.Collections;
 using MongoConsumerLibary.MongoConnection.Collections.PropetyClass;
 using MongoConsumerLibary.MongoConnection.Enums;
@@ -56,6 +56,10 @@ namespace MongoConsumerLibary.MongoConnection
         public async Task<long> GetDocumentCount(DateTime startDate, DateTime endDate, IcdType icdType)
         {
             return await _baseBoxCollection.GetDocumentCount(startDate, endDate, icdType);
+        }
+        public async Task<long> GetStatisticsCount(DateTime startDate, DateTime endDate)
+        {
+            return await _statisticCollection.GetStatisticsCount(startDate, endDate);
         }
         public async Task<List<BaseBoxCollection>> GetDocument(int limit, int skip, DateTime startDate, DateTime endDate)
         {
