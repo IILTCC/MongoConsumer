@@ -69,6 +69,24 @@ namespace MongoConsumerLibary.MongoConnection.Collections
             }
             return 0;
         }
+        public async Task<long> GetStatisticsCount(DateTime startDate, DateTime endDate)
+        {
+            FilterDefinition<CollectionType> filter = Builders<CollectionType>.Filter.And(
+                Builders<CollectionType>.Filter.Gte(document => document.RealTime, startDate),
+                Builders<CollectionType>.Filter.Lt(document => document.RealTime, endDate)
+                );
+            ProjectionDefinition<CollectionType> projection = Builders<CollectionType>.Projection.Exclude(Consts.ARCHIVE_ID_EXCLUDE);
+            try
+            {
+                return await _collection.CountDocumentsAsync(filter);
+            }
+            catch (Exception e)
+            {
+                if (_logger != null)
+                    _logger.LogError("Tried pulling from mongo " + e.Message, LogId.FatalMongoPull);
+            }
+            return 0;
+        }
         public async Task<List<CollectionType>> GetDocument(int limit,int skip, DateTime startDate, DateTime endDate)
         {
             FilterDefinition<CollectionType> filter = Builders<CollectionType>.Filter.And(
