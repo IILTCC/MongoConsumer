@@ -41,7 +41,12 @@ namespace MongoConsumerLibary.MongoConnection.Collections
             ProjectionDefinition<CollectionType> projection = Builders<CollectionType>.Projection.Exclude(Consts.ARCHIVE_ID_EXCLUDE);
             try
             {
-                return await _collection.Find(filter).Limit(limit).Skip(skip).Project<CollectionType>(projection).ToListAsync(); ;
+                IFindFluent<CollectionType,CollectionType> query = _collection.Find(filter).Project<CollectionType>(projection) ;
+                if (skip > 0)
+                    query = query.Skip(skip);                
+                if (limit > 0)
+                    query = query.Limit(limit);
+                return await query.ToListAsync();
             }
             catch (Exception e)
             {
@@ -122,6 +127,38 @@ namespace MongoConsumerLibary.MongoConnection.Collections
                 Builders<CollectionType>.Filter.Eq(Consts.ARCHIVE_ICD_PARAMETER, type.ToString() + Consts.ARCHIVE_ICD_ADDON)
                 );
             return await GetDocumentBase(limit, skip, filter);
+        }       
+        public async Task<List<CollectionType>> GetDocument( DateTime startDate, DateTime endDate)
+        {
+            FilterDefinition<CollectionType> filter = Builders<CollectionType>.Filter.And(
+                Builders<CollectionType>.Filter.Gte(document => document.RealTime, startDate),
+                Builders<CollectionType>.Filter.Lt(document => document.RealTime, endDate));
+            return await GetDocumentBase(0, 0, filter);
+        }       
+        public async Task<List<CollectionType>> GetDocument( IcdType icdType,DateTime startDate, DateTime endDate)
+        {
+            FilterDefinition<CollectionType> filter = Builders<CollectionType>.Filter.And(
+                Builders<CollectionType>.Filter.Gte(document => document.RealTime, startDate),
+                Builders<CollectionType>.Filter.Lt(document => document.RealTime, endDate),
+                Builders<CollectionType>.Filter.Eq(Consts.ARCHIVE_ICD_PARAMETER, icdType.ToString() + Consts.ARCHIVE_ICD_ADDON));
+
+            return await GetDocumentBase(0, 0, filter);
+        }
+        public async Task<(DateTime, DateTime)> GetDateRange(IcdType icdType)
+        {
+            ProjectionDefinition<CollectionType> projection = Builders<CollectionType>.Projection.Exclude(Consts.ARCHIVE_ID_EXCLUDE);
+            CollectionType firstDate =  await _collection.Find(Builders<CollectionType>.Filter.Eq(Consts.ARCHIVE_ICD_PARAMETER, icdType.ToString() + Consts.ARCHIVE_ICD_ADDON)).Limit(1).Sort(Builders<CollectionType>.Sort.Ascending("RealTime")).Project<CollectionType>(projection).FirstOrDefaultAsync();
+            CollectionType lastDate =  await _collection.Find(Builders<CollectionType>.Filter.Eq(Consts.ARCHIVE_ICD_PARAMETER, icdType.ToString() + Consts.ARCHIVE_ICD_ADDON)).Limit(1).Sort(Builders<CollectionType>.Sort.Descending("RealTime")).Project<CollectionType>(projection).FirstOrDefaultAsync();
+
+            return (firstDate.RealTime, lastDate.RealTime);
+        }        
+        public async Task<(DateTime, DateTime)> GetDateRange()
+        {
+            ProjectionDefinition<CollectionType> projection = Builders<CollectionType>.Projection.Exclude(Consts.ARCHIVE_ID_EXCLUDE);
+            CollectionType firstDate =  await _collection.Find(FilterDefinition<CollectionType>.Empty).Limit(1).Sort(Builders<CollectionType>.Sort.Ascending("RealTime")).Project<CollectionType>(projection).FirstOrDefaultAsync();
+            CollectionType lastDate =  await _collection.Find(FilterDefinition<CollectionType>.Empty).Limit(1).Sort(Builders<CollectionType>.Sort.Descending("RealTime")).Project<CollectionType>(projection).FirstOrDefaultAsync();
+
+            return (firstDate.RealTime, lastDate.RealTime);
         }
     }
 }

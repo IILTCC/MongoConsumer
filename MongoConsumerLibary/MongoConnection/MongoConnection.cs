@@ -77,6 +77,21 @@ namespace MongoConsumerLibary.MongoConnection
         {
             return await _baseBoxCollection.GetDocument(collectionType, limit,skip,startDate,endDate);
         }
-
+        public async Task<(DateTime firstDate, DateTime endDate)> GetStatisticsDocumentRange()
+        {
+            return await _statisticCollection.GetDateRange();
+        }       
+        public async Task<(DateTime firstDate, DateTime endDate)> GetFrameDocumentRange(IcdType icdType)
+        {
+            return await _baseBoxCollection.GetDateRange(icdType);
+        }
+        public async Task<List<StatisticCollection>> GetFullStatistics(DateTime startDate, DateTime endDate)
+        {
+            return await _statisticCollection.GetDocument(startDate, endDate);
+        }        
+        public async Task<List<BaseBoxCollection>> GetFullFrames(IcdType icdType,DateTime startDate, DateTime endDate)
+        {
+            return await _baseBoxCollection.GetDocument(icdType,startDate, endDate);
+        }
     }
 }

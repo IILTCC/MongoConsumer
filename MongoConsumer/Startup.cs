@@ -73,7 +73,7 @@ namespace MongoConsumer
                         BaseBoxCollection baseBoxCollection = new BaseBoxCollection();
                         baseBoxCollection.CompressedData = _zlibCompression.CompressData(packetData);
                         baseBoxCollection.IcdType = consumerResult.Topic;
-                        baseBoxCollection.PacketTime = packetParsedDate;
+                        baseBoxCollection.RealTime = packetParsedDate;
                         _mongoConnection.AddDocument(baseBoxCollection,_mongoSettings.DocumentTTL);
                     }
                 }
